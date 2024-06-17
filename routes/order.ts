@@ -167,6 +167,22 @@ module.exports = function placeOrder () {
           }).then(() => {
             doc.end()
           })
+
+          db.orders.insert({
+            promotionalAmount: discountAmount,
+            paymentId: req.body.orderDetails ? req.body.orderDetails.paymentId : null,
+            addressId: req.body.orderDetails ? req.body.orderDetails.addressId : null,
+            orderId,
+            delivered: false,
+            email: (email ? email.replace(/[aeiou]/gi, '*') : undefined),
+            totalPrice,
+            products: basketProducts,
+            bonus: totalPoints,
+            deliveryPrice: deliveryAmount,
+            eta: deliveryMethod.eta.toString()
+          }).then(() => {
+            doc.end()
+          })
         } else {
           next(new Error(`Basket with id=${id} does not exist.`))
         }
